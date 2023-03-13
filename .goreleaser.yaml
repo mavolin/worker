@@ -1,8 +1,8 @@
 before:
   hooks:
     - go mod tidy
-build:
-  skip: true
+builds:
+  - skip: true
 checksum:
   name_template: 'checksums.txt'
 changelog:
