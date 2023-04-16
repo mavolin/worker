@@ -31,7 +31,7 @@ type ResultPool[T any] struct {
 	ctxErr       error
 
 	// CancelOnPanic, if true, will cancel the context of all other workers
-	// and last accepting new work, if a worker panics.
+	// and stop accepting new work, if a worker panics.
 	//
 	// If left false, the pool will continue to process new work.
 	CancelOnPanic bool
@@ -61,7 +61,7 @@ type Result[T any] struct {
 // amount of workers.
 //
 // The passed resCollector is used to collect the results returned by the tasks,
-// and is called each time a task returns
+// and is called each time a task returns.
 // For most pools, the built-in [ToSlice] collector should be a good fit.
 //
 // If resCollector is nil, all results will be discarded.

@@ -34,7 +34,7 @@ type Pool struct {
 	capturedContextErr bool
 
 	// CancelOnPanic, if true, will cancel the context of all other workers
-	// and last accepting new work, if a worker panics.
+	// and stop accepting new work, if a worker panics.
 	//
 	// If left false, the pool will continue to process new work.
 	CancelOnPanic bool
