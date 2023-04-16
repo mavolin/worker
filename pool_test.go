@@ -133,7 +133,7 @@ func TestPool(t *testing.T) {
 		t.Run("1", func(t *testing.T) {
 			t.Parallel()
 
-			var actualRuns int
+			var actualRuns atomic.Int32
 
 			ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
 			defer cancel()
@@ -143,15 +143,15 @@ func TestPool(t *testing.T) {
 
 			for i := 0; i < 3; i++ {
 				p.Go(func(ctx context.Context) (err error, cancel bool) {
-					actualRuns++
+					actualRuns.Add(1)
 					time.Sleep(50 * time.Millisecond)
 					return nil, false
 				})
 			}
 			p.Last()
 
-			for expectRuns := 1; expectRuns <= 3; expectRuns++ {
-				assert.Equal(t, expectRuns, actualRuns)
+			for expectRuns := int32(1); expectRuns <= 3; expectRuns++ {
+				assert.Equal(t, expectRuns, actualRuns.Load())
 				time.Sleep(55 * time.Millisecond)
 			}
 
