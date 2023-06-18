@@ -61,15 +61,16 @@ func veryExpensiveComputation(ctx context.Context) (res int, err error) {
 ```
 
 ```go
-// veryExpensiveComputation does a very expensive computation by splitting
-// the computation into 123 smaller computations.
-// These computations are executed concurrently, 50 at a time.
+// veryExpensiveComputation does a very expensive computation.
+//
+// It splits the computation into 123 smaller computations.
+// These computations are executed concurrently, 5 at a time.
 //
 // If ctx is cancelled before the computation concludes, ctx.Err() is returned.
 //
 // Otherwise, the result or an error is returned.
 func veryExpensiveComputation(ctx context.Context) (res int, err error) {
-    partials := make([]worker.Result[int], 0, 12)
+    partials := make([]worker.Result[int], 0, 123)
     p := worker.NewResultPool(ctx, 5, worker.ToSlice(&partials))
     
     for i := 0; i < 123; i++ {
@@ -83,12 +84,11 @@ func veryExpensiveComputation(ctx context.Context) (res int, err error) {
     }
 	
     for _, partial := range partials {
-        // compute res from partial result
         if partial.Err != nil {
             return 0, err
         }
-        
-        res += partial.Result
+
+        // compute res from partial result
     }
 	
     return res, nil
